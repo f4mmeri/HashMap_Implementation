@@ -52,6 +52,10 @@ public:
         return cubeta[pos].valor;
     }
 
+    bool empty() const {
+        return _size == 0;
+    }
+
     int size() const {
         return cantidadClaves;
     }
