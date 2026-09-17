@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct Par {
+    long long clave;
+    int valor;
+};
+
+class TablaHash {
+private:
+    vector<vector<Par>> cubetas;
+    int capacidad;
+    int cantidadClaves = 0;
+
+    int funcionHash(long long clave) {
+        long long h = clave * 2654435761LL;
+        if (h < 0) h = -h;
+        return h % capacidad;
+    }
+
+    int buscarEnCubeta(vector<Par>& cubeta, long long clave) {
+        for (int i = 0; i < (int)cubeta.size(); ++i) {
+            if (cubeta[i].clave == clave) return i;
+        }
+        return -1;
+    }
+
+public:
+    TablaHash(int cap) : capacidad(cap) {
+        cubetas.resize(capacidad);
+    }
+
+    int& operator[](long long clave) {
+        int indice = funcionHash(clave);
+        vector<Par>& cubeta = cubetas[indice];
+
+        int pos = buscarEnCubeta(cubeta, clave);
+        if (pos == -1) {
+            cubeta.push_back({clave, 0});
+            cantidadClaves++;
+            pos = (int)cubeta.size() - 1;
+        }
+        return cubeta[pos].valor;
+    }
+
+    int obtener(long long clave) {
+        int indice = funcionHash(clave);
+        vector<Par>& cubeta = cubetas[indice];
+        int pos = buscarEnCubeta(cubeta, clave);
+        if (pos == -1) return 0;
+        return cubeta[pos].valor;
+    }
+
+    int size() const {
+        return cantidadClaves;
+    }
+};
+
+ 
