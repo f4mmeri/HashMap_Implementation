@@ -1,5 +1,4 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
 struct Par {
@@ -52,8 +51,36 @@ public:
         return cubeta[pos].valor;
     }
 
+    bool has_key(long long clave) {
+        int indice = funcionHash(clave);
+        return buscarEnCubeta(cubetas[indice], clave) != -1;
+    }
+
+    void erase(long long clave) {
+        int indice = funcionHash(clave);
+        vector<Par>& cubeta = cubetas[indice];
+        int pos = buscarEnCubeta(cubeta, clave);
+        if (pos != -1) {
+            cubeta[pos] = cubeta.back();  
+            cubeta.pop_back();
+            --cantidadClaves;
+        }
+    }
+
+    template <typename F>
+    void for_each(F f) {
+        for (auto& cubeta : cubetas)
+            for (auto& p : cubeta)
+                f(p.clave, p.valor);
+    }
+
+    void clear() {
+        for (auto& cubeta : cubetas) cubeta.clear();
+        cantidadClaves = 0;
+    }
+
     bool empty() const {
-        return _size == 0;
+        return cantidadClaves == 0;
     }
 
     int size() const {
@@ -61,4 +88,26 @@ public:
     }
 };
 
- 
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    cin >> n >> q;
+
+    TablaHash frecuencias(2 * n);
+
+    for (int i = 0; i < n; ++i) {
+        long long x;
+        cin >> x;
+        frecuencias[x]++;
+    }
+
+    while (q--) {
+        long long x;
+        cin >> x;
+        cout << frecuencias.obtener(x) << '\n';
+    }
+
+    return 0;
+}
