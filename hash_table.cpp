@@ -53,21 +53,38 @@ template < typename key_type, typename value_type >
             }
             return true;
         }
+        
         int _hash(key_type key) const {
-            // Para enteros
-            const int B = 311;
-            const int MOD = 1e9 + 7;
-            int hash_value = 0;
-            while (key > 0) {
-                int d = key % 10;
-                hash_value = (1ll * hash_value * B + (d + 1)) % MOD;
-                key /= 10;
-            }
-            return hash_value % m;
-        }
+        const int B = 311;
+        const int MOD = 1e9 + 7;
+        long long k = key;
+        if (k < 0) k = -k; // o usa un manejo distinto si el signo debe importar
+        int hash_value = 0;
+        if (k == 0) return 0; // caso especial
+        while (k > 0) {
+            int d = k % 10;
+            hash_value = (1ll * hash_value * B + (d + 1)) % MOD;
+            k /= 10;
+    }
+        return hash_value % m;
+}
 
         int size() const {
             return _size;
+        }
+
+        value_type get(const key_type & key, const value_type & def = value_type()) const {
+        int chain_position = _hash(key);
+        for (auto & e : chains[chain_position])
+            if (e.first == key) return e.second;
+        return def;
+}
+
+        bool empty() const { return _size == 0;}
+
+        void clear() {
+            for (auto & c : chains) c.clear();
+            _size = 0;
         }
 
         void print() {
@@ -80,3 +97,5 @@ template < typename key_type, typename value_type >
             }
         }
     };
+    
+ 
